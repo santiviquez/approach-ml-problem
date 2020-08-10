@@ -350,3 +350,205 @@ def weighted_f1(y_true, y_pred):
     # calculate average over all classes
     overall_f1 = f1 / len(y_true)
     return overall_f1
+
+
+def pk(y_true, y_pred, k):
+    """
+    Function to calculate precision at k
+
+    Args:
+        y_true: list of true values
+        y_pred: list of predicted values
+    """
+
+    if k == 0:
+        return 0
+    # we are interested only in the top-k predictions
+    y_pred = y_pred[:k]
+    # convert predictions to set
+    pred_set = set(y_pred)
+    # convert actual values to set
+    true_set = set(y_true)
+    # find common values
+    common_values = pred_set.intersection(true_set)
+    # return length of common values over k
+    return len(common_values) / len(y_pred[:k])
+
+
+def apk(y_true, y_pred, k):
+    """
+    Function to calculate average precision at k
+
+    Args:
+        y_true: list of true values
+        y_pred: list of predicted values
+    """
+
+    # initialize p@k list of values
+    pk_values = []
+    # loop over all k. from 1 to k + 1
+    for i in range(1, k  + 1):
+        # calculate p@i and add it to the list
+        pk_values.append(pk(y_true, y_pred, i))
+    
+    # if we have no values in the list, return 0
+    if len(pk_values) == 0:
+        return 0
+    # else, we return the summ of list over lenght of list
+    return sum(pk_values) / len(pk_values)
+
+
+def mapk(y_true, y_pred, k):
+    """
+    Function to calculate mean average precision at k
+
+    Args:
+        y_true: list of true values
+        y_pred: list of predicted values
+    """
+
+    apk_values = []
+    # loop over all samples
+    for i in range(len(y_true)):
+        # store apk values for every sample
+        apk_values.append(apk(y_true[i], y_pred[i], k=k))
+    # return mean of apk values list
+    return sum(apk_values) / len(apk_values)
+
+
+def mean_absolute_error(y_true, y_pred):
+    """
+    This function calculates mae
+
+    Args:
+        y_true: list of real numbers, true values
+        y_pred: list of real numbers, predicted values
+    """
+    # initialize error at 0
+    error = 0
+    # loop over all samples in the true and predicted list
+    for yt, yp in zip(y_true, y_pred):
+        error += np.abs(yt - yp)
+    return error / len(y_true)
+
+
+def mean_squared_error(y_true, y_pred):
+    """
+    This function calculates mse
+
+    Args:
+        y_true: list of real numbers, true values
+        y_pred: list of real numbers, predicted values
+    """
+    # initialize error at 0
+    error = 0
+    # loop over all samples in the true and predicted list
+    for yt, yp in zip(y_true, y_pred):
+        error += (yt - yp) ** 2
+    return error / len(y_true)
+
+
+def mean_squared_log_error(y_true, y_pred):
+    """
+    This function calculates msle
+
+    Args:
+        y_true: list of real numbers, true values
+        y_pred: list of real numbers, predicted values
+    """
+    # initialize error at 0
+    error = 0
+    # loop over all samples in the true and predicted list
+    for yt, yp in zip(y_true, y_pred):
+        error += (np.log(1 + yt) - np.log(1 + yp)) ** 2
+    return error / len(y_true)
+
+
+def mean_percentage_error(y_true, y_pred):
+    """
+    This function calculates mpe
+
+    Args:
+        y_true: list of real numbers, true values
+        y_pred: list of real numbers, predicted values
+    """
+    # initialize error at 0
+    error = 0
+    # loop over all samples in the true and predicted list
+    for yt, yp in zip(y_true, y_pred):
+        error += (yt - yp) / yt
+    return error / len(y_true)
+
+
+def mean_abs_percentage_error(y_true, y_pred):
+    """
+    This function calculates mape
+
+    Args:
+        y_true: list of real numbers, true values
+        y_pred: list of real numbers, predicted values
+    """
+    # initialize error at 0
+    error = 0
+    # loop over all samples in the true and predicted list
+    for yt, yp in zip(y_true, y_pred):
+        error += np.abs(yt - yp) / yt
+    return error / len(y_true)
+
+
+def r2(y_true, y_pred):
+    """
+    This function calculates r-squared score
+
+    Args:
+        y_true: list of real numbers, true values
+        y_pred: list of real numbers, predicted values
+    """
+
+    #  calculates the mean value of true values
+    mean_true_values = np.mean(y_true)
+
+    # initialize numerator with 0
+    numerator = 0
+    # initialize denominator with 0
+    denominator = 0
+
+    # loop over all the true and predicted values
+    for yt, yp in zip(y_true, y_pred):
+        numerator += (yt - yp) ** 2
+        denominator += (yt - mean_true_values) ** 2
+    # calculate ratio
+    ratio = numerator / denominator
+    return 1 - ratio
+
+
+def mcc(y_true, y_pred):
+    """
+    This function calculates Matthew's Correlation Coefficient
+
+    Args:
+        y_true: list of real numbers, true values
+        y_pred: list of real numbers, predicted values
+    """
+
+    tp = true_positive(y_true, y_pred)
+    tn = true_negative(y_true, y_pred)
+    fp = false_positive(y_true, y_pred)
+    fn = false_negative(y_true, y_pred)
+
+    print(tp)
+    print(tn)
+    print(fp)
+    print(fn)
+    numerator = (tp * tn) - (fp * fn)
+
+    denominator = (
+        (tp + fn) *
+        (fn + tn) *
+        (fp + tn) *
+        (tp + fn)
+    )
+
+    denominator = denominator * 0.5
+
+    return numerator / denominator
