@@ -2,3 +2,4 @@ winequality-red.csv
 .ipynb_checkpoints
 __pycache__
 .vscode/
+*.csv
