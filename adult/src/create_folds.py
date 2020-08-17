@@ -23,4 +23,4 @@ if __name__ == "__main__":
         df.loc[v_, 'kfold'] = f
     
     # save the new csv with the kfold column
-    df.to_csv('../input/adult_folds.csv')
+    df.to_csv('../input/adult_folds.csv', index=False)
