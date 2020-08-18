@@ -80,7 +80,6 @@ def create_model(data, catcols):
 def run(fold):
     # load the full training data with folds
     df = pd.read_csv('../input/train_folds.csv')
-    print(df.columns.values)
 
     # all columns are features except kfold columns
     features = [
