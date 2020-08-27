@@ -3,3 +3,4 @@ winequality-red.csv
 __pycache__
 .vscode/
 *.csv
+*.vec
